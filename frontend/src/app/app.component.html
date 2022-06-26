@@ -1,0 +1,105 @@
+<div class="container py-5">
+  <div class="rounded shadow p-5 d-flex">
+    <img src="/assets/notes.svg" alt="Notes" width="250" />
+
+    <div>
+      <h3 class="text-primary">Welcome to Notes</h3>
+      <h5 class="text-secondary">
+        With this app you will can create, consult, update and delete your
+        notes.
+      </h5>
+      <hr />
+
+      <p class="text-muted">
+        This app was development with Spring Boot, Angular and MySQL.
+      </p>
+    </div>
+  </div>
+  <div class="row mt-5"></div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>My note list</h3>
+
+      <div class="my-5"></div>
+
+      <div *ngFor="let note of notes" class="card mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div class="fw-bold">
+              {{ note.title }}
+            </div>
+            <div>
+              {{ note.description }}
+            </div>
+
+            <div class="text-muted">
+              <i
+                class="fa fa-edit cursor-pointer"
+                title="Edit note"
+                (click)="editNote(note)"
+              ></i>
+              <i
+                class="fa fa-trash ms-2 cursor-pointer"
+                title="Delete note"
+                (click)="deleteNote(note)"
+              ></i>
+            </div>
+          </div>
+
+          <div>
+            <small class="text-succes" *ngIf="note.archived; else noArchived">
+              <i class="fa fa-check-circle"></i> Archived
+            </small>
+
+            <ng-template #noArchived>
+              <small class="text-muted">
+                <i class="da da-clock"></i> No archived
+              </small>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h3>{{ note.id ? "Edit" : "New" }} note</h3>
+      <form class="mt-5" (ngSubmit)="saveNote()">
+        <div class="mb-3 form-floating">
+          <input
+            type="text"
+            id="title"
+            placeholder="Title"
+            name="title"
+            class="form-control"
+            [(ngModel)]="note.title"
+          />
+          <label for="title">Title</label>
+        </div>
+        <div class="mb-3 form-floating">
+          <input
+            type="text"
+            id="description"
+            placeholder="Description"
+            name="description"
+            class="form-control"
+            [(ngModel)]="note.description"
+          />
+          <label for="description">Description</label>
+        </div>
+        <div class="mb-3 form-check">
+          <input
+            type="checkbox"
+            id="archived"
+            class="form-check-input"
+            name="archived"
+            [(ngModel)]="note.archived"
+          />
+          <label for="archived" class="form-check-label">Archived</label>
+        </div>
+
+        <div class="text-end">
+          <button class="btn btn-primary btn-lg">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
