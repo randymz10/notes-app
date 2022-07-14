@@ -59,6 +59,6 @@ export class AppComponent implements OnInit {
 
   deleteNote(note: any){
     this.appService.deleteNote(note.id)
-    .subscribe(() => this.getNotes);
+    .subscribe(() => this.getNotes());
   }
 }

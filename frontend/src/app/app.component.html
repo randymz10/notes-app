@@ -1,105 +1,185 @@
-<div class="container py-5">
-  <div class="rounded shadow p-5 d-flex">
-    <img src="/assets/notes.svg" alt="Notes" width="250" />
-
-    <div>
-      <h3 class="text-primary">Welcome to Notes</h3>
-      <h5 class="text-secondary">
-        With this app you will can create, consult, update and delete your
-        notes.
-      </h5>
-      <hr />
-
-      <p class="text-muted">
-        This app was development with Spring Boot, Angular and MySQL.
-      </p>
+<!--Header-->
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <h1>My Notes</h1>
+    </div>
+    <div class="col-md-3">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#saveNote"
+      >
+        Create note
+      </button>
+      <button
+        type="button"
+        class="btn btn-link"
+        (click)="getNotesArchived()"
+      >
+        Archived notes
+      </button>
+       
     </div>
   </div>
-  <div class="row mt-5"></div>
-  <div class="row">
-    <div class="col-md-6">
-      <h3>My note list</h3>
 
-      <div class="my-5"></div>
+  <!--Save note Modal-->
 
-      <div *ngFor="let note of notes" class="card mb-3">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div class="fw-bold">
-              {{ note.title }}
-            </div>
-            <div>
-              {{ note.description }}
-            </div>
-
-            <div class="text-muted">
-              <i
-                class="fa fa-edit cursor-pointer"
-                title="Edit note"
-                (click)="editNote(note)"
-              ></i>
-              <i
-                class="fa fa-trash ms-2 cursor-pointer"
-                title="Delete note"
-                (click)="deleteNote(note)"
-              ></i>
-            </div>
+  <div class="modal fade" id="saveNote">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">
+            <h3>{{ note.id ? "Edit" : "New" }} Note</h3>
           </div>
-
-          <div>
-            <small class="text-succes" *ngIf="note.archived; else noArchived">
-              <i class="fa fa-check-circle"></i> Archived
-            </small>
-
-            <ng-template #noArchived>
-              <small class="text-muted">
-                <i class="da da-clock"></i> No archived
-              </small>
-            </ng-template>
-          </div>
+          <!--Button close X-->
+          <button
+            type="button"
+            class="btn btn-close text-end"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <!--Formulary-->
+          <form>
+            <!--Title-->
+            <div class="mb-3">
+              <label for="title" class="mb-2">Title</label>
+              <input
+                type="text"
+                id="title"
+                placeholder="Title..."
+                name="title"
+                class="form-control"
+                [(ngModel)]="note.title"
+              />
+            </div>
+            <!--Description-->
+            <div class="mb-3">
+              <label for="description" class="mb-2">Description</label>
+              <textarea
+                name="description"
+                id="description"
+                placeholder="Description..."
+                cols="30"
+                rows="5"
+                class="form-control"
+                [(ngModel)]="note.description"
+              ></textarea>
+            </div>
+            <!--Check archived-->
+            <div class="mb-3 form-check">
+              <input
+                type="checkbox"
+                id="archived"
+                class="form-check-input"
+                name="archived"
+                [(ngModel)]="note.archived"
+              />
+              <label for="archived" class="form-check-label">Archived</label>
+            </div>
+            <div class="text-end">
+              
+              <!--Button cancel-->
+              <button
+                class="btn btn-danger m-3"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                Cancel
+              </button>
+              <!--Button save-->
+              <button
+                (click)="saveNote()"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                Save
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <h3>{{ note.id ? "Edit" : "New" }} note</h3>
-      <form class="mt-5" (ngSubmit)="saveNote()">
-        <div class="mb-3 form-floating">
-          <input
-            type="text"
-            id="title"
-            placeholder="Title"
-            name="title"
-            class="form-control"
-            [(ngModel)]="note.title"
-          />
-          <label for="title">Title</label>
-        </div>
-        <div class="mb-3 form-floating">
-          <input
-            type="text"
-            id="description"
-            placeholder="Description"
-            name="description"
-            class="form-control"
-            [(ngModel)]="note.description"
-          />
-          <label for="description">Description</label>
-        </div>
-        <div class="mb-3 form-check">
-          <input
-            type="checkbox"
-            id="archived"
-            class="form-check-input"
-            name="archived"
-            [(ngModel)]="note.archived"
-          />
-          <label for="archived" class="form-check-label">Archived</label>
+  </div>
+
+  <!--Show notes-->
+  <div class="row d-flex flex-row justify-content-around">
+    <div *ngFor="let note of notes" class="card m-3 w-25 p-0">
+      <div class="card-header">
+        <div class="card-title">{{ note.title }}</div>
+      </div>
+      <div class="card-body">
+        <p class="card-text text-muted">{{ note.description }}</p>
+      </div>
+      <div class="card-footer">
+        <div class="text-muted text-end">
+          <i
+            class="fa fa-edit cursor-pointer"
+            title="Edit note"
+            data-bs-toggle="modal"
+            data-bs-target="#saveNote"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            (click)="editNote(note)"
+          ></i>
+          <i
+            class="fa fa-trash ms-2 cursor-pointer"
+            title="Delete note"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteNote"
+          ></i>
         </div>
 
-        <div class="text-end">
-          <button class="btn btn-primary btn-lg">Save</button>
+        <!--Cancel modal-->
+
+        <div
+          class="modal fade"
+          id="deleteNote"
+          tabindex="-1"
+          aria-labelledby="deleteModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title text-muted" id="deleteModalLabel">
+                  Warning
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">Are you sure to delete this note?</div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  (click)="deleteNote(note)"
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>
